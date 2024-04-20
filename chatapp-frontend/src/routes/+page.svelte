@@ -180,6 +180,15 @@ let payload = {
   if (browser) {
     onMount(async () => {
       keyPair = await generateKeyPair();
+
+      // let storedKeyPair = sessionStorage.getItem('keyPair');
+
+      // if (storedKeyPair !== null) {
+      //   keyPair = JSON.parse(storedKeyPair);
+      // } else {
+      //   keyPair = await generateKeyPair();
+      //   sessionStorage.setItem('keyPair', JSON.stringify(keyPair));
+      // }
       socket = new WebSocket('ws://localhost:3000');
       socket.onopen = () => {
         console.log('Connected to server');
@@ -261,7 +270,7 @@ let payload = {
           } 
           else if (type === 'typing') {
               if (data.typing && !typingUsers.includes(data.user)) {
-                typingUsers.push(data.user);
+                typingUsers = [...typingUsers, data.user];
               } else if (!data.typing) {
                 typingUsers = typingUsers.filter(u => u !== data.user);
               }
@@ -304,7 +313,7 @@ let payload = {
     clearTimeout(typingTimeout);
     if (!typing) {
       typing = true;
-      socket.send(JSON.stringify({ type: 'typing', data: {user: data.nickname, typing: true }}));
+      socket.send(JSON.stringify({ type: 'typing', data: {user: data.nickname, typing: true }})); 
     }
     typingTimeout = setTimeout(stopTyping, 1000);
   }
@@ -351,13 +360,18 @@ let payload = {
               <img src={`https://ui-avatars.com/api/?name=${user.nickname}&background=random`} alt="User avatar" class="w-10 h-10 rounded-full" />
               <div class="text-xl">{user.nickname}</div>
               {#if typingUsers.includes(user.nickname)}
-              <div class="text-sm text-gray-500">typing...</div>
+              <div class="flex space-x-1">
+                <div class="typing-indicator"></div>
+                <div class="typing-indicator"></div>
+                <div class="typing-indicator"></div>
+                <div class="text-sm text-gray-300">typing...</div>
+              </div>
             {/if}
             </button>
           {/each}
         {/key}
       </div>
-        <!-- Add this div for the encryption log message box -->
+        
         <div class="mt-5 p-3 border rounded-2xl bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 max-w-72 min-w-72 mx-auto max-h-60 overflow-auto">
           <div class="flex justify-center">
             <button on:click={() => isEncryptLogExpanded = !isEncryptLogExpanded} class="text-sm mb-2 ">Encryption Log</button>
@@ -369,7 +383,7 @@ let payload = {
           {/if}
         </div>
 
-        <!-- Add this div for the decryption log message box -->
+        
         <div class="mt-5 p-3 border rounded-2xl bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 max-w-72 min-w-72 mx-auto max-h-60 overflow-auto">
           <div class="flex justify-center">
             <button on:click={() => isDecryptLogExpanded = !isDecryptLogExpanded} class="text-sm mb-2 ">Decryption Log</button>
@@ -429,3 +443,30 @@ let payload = {
 </div>
 
 <NewChat bind:show={showNewModal} callback={newConversation} />
+
+<style>
+  .typing-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #cec7c7;
+
+    animation: typing 1.2s infinite;
+    animation-delay: 0.0s;
+  }
+
+  .typing-indicator:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .typing-indicator:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes typing {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
+  }
+</style>

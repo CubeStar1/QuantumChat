@@ -29,10 +29,11 @@ async function generateKey(): Promise<string> {
       let keySize = 16;
       let rep = 128 / keySize;
       let ct = 0;
-      while (finalKey.length < keySize) {
+      while (finalKey.length <= keySize) {
         ct++;
         console.log(ct);
-        const response = await axios.get('http://192.168.1.6:8000/key');
+        const url = `http://192.168.1.6:8000/key/${keySize}`;
+        const response = await axios.get(url);
         const { alice_key, bob_key }: { alice_key: string, bob_key: string } = response.data;
         finalKey += alice_key;
       }
