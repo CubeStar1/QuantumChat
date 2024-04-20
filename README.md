@@ -1,6 +1,11 @@
 # Quantum Chat
 
-Quantum Chat is a secure chat system that uses Quantum Key Distribution (QKD) for generating cryptographic keys and RSA for key exchange. It consists of a server-side component written in TypeScript and a client-side component written in Svelte.
+- Quantum Chat is a secure chat system that uses Quantum Key Distribution (QKD) for generating cryptographic keys and RSA for key exchange. 
+- It consists of a server-side component written in TypeScript and a client-side component written in Svelte. 
+- The server uses WebSockets to communicate with clients, while the client uses IndexedDB to store users and messages.
+- The server generates symmetric keys using a FastAPI application that uses quantum computations to generate shared keys.
+- The server sends encrypted symmetric keys to clients using RSA, and clients decrypt them using their private keys.
+- The client encrypts and decrypts messages using the AES-CTR algorithm, ensuring secure communication between users.
 
 ## Server-side (TypeScript)
 
@@ -129,7 +134,7 @@ The key generation server is a FastAPI application that generates shared keys us
 1. Navigate to the key generation server directory:
 
 ```bash
-cd qkd-key-generation
+cd qkd-server
 ```
 
 2. Install the dependencies:
