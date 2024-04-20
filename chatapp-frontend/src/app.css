@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "San Francisco";
+  font-weight: 400;
+  src: url("https://raw.githubusercontent.com/sahibjotsaggu/San-Francisco-Pro-Fonts/master/SF-Pro.ttf");
+}
+
+body {
+    font-family: "San Francisco";
+
+    @apply text-black dark:text-white;
+    @apply bg-white dark:bg-neutral-900;
+}
+
+.btn-success {
+    @apply rounded cursor-pointer bg-green-500 hover:bg-green-600 transition disabled:bg-green-400 disabled:hover:bg-green-400 disabled:cursor-not-allowed
+}
+
+.btn-secondary {
+    @apply rounded cursor-pointer bg-neutral-500 hover:bg-neutral-600 transition disabled:bg-neutral-400 disabled:hover:bg-neutral-400 disabled:cursor-not-allowed
+}
+
+.btn-cancel {
+    @apply rounded cursor-pointer bg-red-500 hover:bg-red-600 transition disabled:bg-red-400 disabled:hover:bg-red-400 disabled:cursor-not-allowed
+}
+
+.overflow-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .overflow-scroll {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }

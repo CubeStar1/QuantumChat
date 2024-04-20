@@ -1,0 +1,7 @@
+streamlit~=1.33.0
+qiskit~=0.46.0
+qiskit-aer~=0.14.0.1
+pillow~=10.3.0
+pytest~=8.1.1
+fastapi~=0.110.2
+uvicorn~=0.29.0

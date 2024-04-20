@@ -1,0 +1,4 @@
+[[d1_databases]]
+binding = "DB" # i.e. available in your Worker on env.DB
+database_name = "chat-app"
+database_id = "30ed8cb6-ceb0-4f86-9db0-93f12633efae"
