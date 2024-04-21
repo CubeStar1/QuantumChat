@@ -336,6 +336,9 @@ let payload = {
       <div class="bg-white text-purple-600 p-2 rounded-md text-sm">
         Logged in as {data.nickname}
       </div>
+      <div class="bg-white text-purple-600 p-2 rounded-md text-sm">
+        QKD Protocol: Bell State
+    </div>
     <ThemeSwitcher />
   </div>
 </div>

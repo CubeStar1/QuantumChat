@@ -32,9 +32,14 @@ async function generateKey(): Promise<string> {
       while (finalKey.length <= keySize) {
         ct++;
         console.log(ct);
-        const url = `http://192.168.1.6:8000/key/${keySize}`;
-        const response = await axios.get(url);
-        const { alice_key, bob_key }: { alice_key: string, bob_key: string } = response.data;
+        const urls = [
+          `http://192.168.1.6:8000/bs_key/${keySize}`,
+          `http://192.168.1.6:8000/bb84_key/${keySize}`
+        ];
+      
+      const randomUrl = urls[Math.floor(Math.random() * urls.length)];
+      const response = await axios.get(randomUrl);
+        const { alice_key, bob_key, time_taken }: { alice_key: string, bob_key: string, time_taken: string } = response.data;
         finalKey += alice_key;
       }
   
