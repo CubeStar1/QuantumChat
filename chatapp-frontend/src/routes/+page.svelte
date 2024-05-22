@@ -46,6 +46,9 @@
     receiver: string;
     encrypted: boolean;
     content: string;
+    type?: string;
+    data?: string;
+    image?: string;
   }
 
   let messagesStore = writable<Message[]>([]);
@@ -64,6 +67,9 @@
 
   let encryptLogElement : HTMLElement ;
   let decryptLogElement : HTMLElement ;
+
+
+
 
   function decryptMessage(message: Message, user: User | null): Message {
   if (!user) {
@@ -87,6 +93,7 @@
     logDecryptMessages += `Symmetric Key: ${user.key}\n`;
     logDecryptMessages += `Message decrypted: ${decryptedText}\n`;
     return {
+      type: 'message',
       encrypted: false,
       content: decryptedText,
       timestamp: message.timestamp,
@@ -208,6 +215,7 @@ let payload = {
       request.onupgradeneeded = function() {
         const db = request.result;
         var messageStore = db.createObjectStore("messages", { keyPath: "timestamp" });
+        messageStore.createIndex("type", "type", { unique: false })
         messageStore.createIndex("sender", "sender", { unique: false });
         messageStore.createIndex("receiver", "receiver", { unique: false });
         messageStore.createIndex("encrypted", "encrypted", { unique: false });
@@ -268,6 +276,26 @@ let payload = {
 
             console.log('Users:', users)
           } 
+          else if(type == 'image'){
+            var transaction = db.transaction(["messages"], "readwrite");
+            var messageStore = transaction.objectStore("messages");
+            let message = data
+            console.log(`Message: ${JSON.stringify(message)}`);
+            var addImageRequest = messageStore.add(message);
+            addImageRequest.onsuccess = function(event) {
+              console.log("New image added successfully");
+              messagesStore.update((mess) => {
+                mess.push(message);
+                markedDirty = !markedDirty;
+                return mess;
+              });
+            };
+            addImageRequest.onerror = function(event) {
+              console.log("Error adding image:", event.target.error);
+            };
+            } 
+            // messageStore.update(messages => [...messages, { type: 'image', data: message.data , sender: data.nickname, receiver: data.recipient, timestamp: Date.now(), encrypted: false}]);
+
           else if (type === 'typing') {
               if (data.typing && !typingUsers.includes(data.user)) {
                 typingUsers = [...typingUsers, data.user];
@@ -289,6 +317,7 @@ let payload = {
                 markedDirty = !markedDirty;
                 return mess;
               });
+              // decryptedMessages = [...decryptedMessages, { type: 'image', data: message.data , sender: data.nickname, receiver: data.recipient, timestamp: Date.now(), encrypted: false}];
             };
             addRequest.onerror = function(event) {
               console.error("Error adding message:", event.target.error);
@@ -323,6 +352,31 @@ let payload = {
     socket.send(JSON.stringify({ type: 'typing', data: {user: data.nickname, typing: false }}));
   }
 
+  async function sendImage() {
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = async (event) => {
+      const dataUrl = event.target.result;
+      const message = {
+        type: 'image',
+        data: {
+          type: 'image',
+          image: dataUrl,
+          sender: data.nickname,
+          receiver: selectedUser?.nickname,
+          timestamp: Date.now(),
+          encrypted: false}
+      };
+
+      // Assume `socket` is the WebSocket connection to the server
+      socket.send(JSON.stringify(message));
+    };
+
+    reader.readAsDataURL(file);
+  }
+
 </script>
 
 <svelte:head>
@@ -330,18 +384,21 @@ let payload = {
 </svelte:head>
 
 <div class="flex flex-col mx-auto p-2 h-screen">
-  <div class="flex flex-row justify-between bg-gradient-to-r from-pink-500 to-purple-600 p-4 rounded-lg">
+  <div class="flex flex-row justify-start bg-gradient-to-r from-red-500 to-orange-400 p-4 rounded-lg">
+    <div>
+      <img src="./src/qclogo.png" alt="Quantum Chat logo" class="w-12" />
+    </div>
     <h1 class="text-4xl font-bold text-white">Quantum Chat</h1>
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 ml-auto">
       <div class="bg-white text-purple-600 p-2 rounded-md text-sm">
         Logged in as {data.nickname}
       </div>
       <div class="bg-white text-purple-600 p-2 rounded-md text-sm">
         QKD Protocol: Bell State
+      </div>
+      <ThemeSwitcher />
     </div>
-    <ThemeSwitcher />
   </div>
-</div>
 
   <div class="flex flex-row flex-1 gap-2 overflow-auto h-screen">
 
@@ -397,8 +454,9 @@ let payload = {
             </div>
           {/if}
         </div>
-      <button class="p-4 mt-5 mb-3 bg-sky-500 dark:bg-sky-600 hover:bg-sky-600 dark:hover:bg-sky-700 transition rounded-2xl" on:click={() => showNewModal = true}
-        >New Chat</button>
+        <button class="p-4 mt-5 mb-3 bg-transparent border border-transparent backdrop-filter backdrop-blur-md rounded-2xl transition text-white" style="background-image: linear-gradient(to right, #ff7e5f, #feb47b); box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); backdrop-filter: blur(8.5px);" on:click={() => showNewModal = true}>
+          New Chat
+        </button>
     </div>
     
     <div class="flex flex-col flex-1 overflow-scroll">
@@ -412,7 +470,16 @@ let payload = {
             class:bg-sky-400={message.sender === data.nickname}
             class:dark:bg-sky-500={message.sender === data.nickname}
           >
-            <SvelteMarkdown source={message.content} />
+
+            {#if message.type === 'image'}
+
+              <img src= {message.image} alt="Image" class="rounded-lg" />
+            {/if}
+
+            {#if message.type === 'message'}
+              <SvelteMarkdown source={message.content} />
+            {/if}
+
             <div 
               class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs rounded bg-gray-700 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200"
             >
@@ -427,6 +494,14 @@ let payload = {
       </div>
 
       <form class="flex flex-row items-end " on:submit|preventDefault={handleSubmit}>
+        <input type="file" id="fileInput" class="hidden" on:change={sendImage} />
+        <button 
+          type="button" 
+          class="rounded-3xl ml-2 my-4 transition text-5xl text-sky-500 hover:text-sky-600"
+          on:click={() => document.getElementById('fileInput').click()}
+        >
+          📷
+        </button>
         <textarea class="max-h-32 flex-1 dark:bg-neutral-900 dark:border-neutral-700 border border-neutral-300 rounded-md w-full my-4 text-xl p-2"
           on:keydown={handleKeyDown}
           on:input={handleInput}

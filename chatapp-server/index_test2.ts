@@ -33,8 +33,9 @@ async function generateKey(): Promise<string> {
         ct++;
         console.log(ct);
         const urls = [
-          `http://192.168.1.6:8000/bs_key/${keySize}`,
-          `http://192.168.1.6:8000/bb84_key/${keySize}`
+          `http://192.168.1.10:8000/bs_key/${keySize}`,
+          `http://192.168.1.10:8000/bb84_key/${keySize}`,
+          `http://192.168.1.10:8000/e91_key/${keySize}`
         ];
       
       const randomUrl = urls[Math.floor(Math.random() * urls.length)];
@@ -94,6 +95,17 @@ wss.on('connection', (ws: WebSocket) => {
                 wss.clients.forEach((client) => {
                   if (client !== ws && client.readyState === WebSocket.OPEN) {
                     client.send(JSON.stringify({ type: 'typing', data: {user: data.user, typing: data.typing }}));
+                  }
+                });
+              }
+
+              else if(type =='image') {
+                const senderWs = connections.get(data.sender);
+                const recipientWs = connections.get(data.recipient);
+                
+                [senderWs, recipientWs].forEach((ws) => {
+                  if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ type: 'image', data: data}));
                   }
                 });
               }

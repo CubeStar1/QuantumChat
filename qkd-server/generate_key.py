@@ -1,8 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 from app_functions import quantum_compute
 from app_functions import generate_code
 from app_functions import get_correct_measurements
+from generate_bb84_key import bb84_qkd_protocol
+from generate_e91_key import e91_qkd_protocol, simulate_e91_protocol
 import random
 import time
 
@@ -16,8 +18,10 @@ correction_bits = 1
 
 app = FastAPI()
 
-@app.get("/key/{desired_key_length}")
-def get_key(desired_key_length: int):
+@app.get("/bs_key/{desired_key_length}")
+async def get_bs_key(desired_key_length: int):
+    if desired_key_length <= 0:
+        raise HTTPException(status_code=400, detail="Number of bits must be positive")
     desired_key_length = desired_key_length
     start_time = time.time()  # Start the timer
     alice_code, bob_code = "", ""
@@ -41,4 +45,26 @@ def get_key(desired_key_length: int):
     end_time = time.time()  # Stop the timer
     time_taken = end_time - start_time  # Calculate the time taken
     # Return the keys
-    return {"alice_key": alice_code, "bob_key": bob_code, "time_taken": time_taken}
+    return {"alice_key": alice_code, "bob_key": bob_code, "time_taken": time_taken, "protocol": "BS"}
+
+
+@app.get("/bb84_key/{desired_key_length}")
+async def get_vv84_key(desired_key_length: int):
+    if desired_key_length <= 0:
+        raise HTTPException(status_code=400, detail="Number of bits must be positive")
+    st = time.time()
+    shared_key = bb84_qkd_protocol(desired_key_length)
+    et = time.time()
+    time_taken = et - st
+    return {"alice_key": shared_key, "bob_key": shared_key, "time_taken": str(time_taken) , "protocol": "BB84"}
+
+
+@app.get("/e91_key/{desired_key_length}")
+async def get_e91_key(desired_key_length: int):
+    if desired_key_length <= 0:
+        raise HTTPException(status_code=400, detail="Number of bits must be positive")
+    st = time.time()
+    alice_key, bob_key = e91_qkd_protocol(desired_key_length)
+    et = time.time()
+    time_taken = et - st
+    return {"alice_key": alice_key, "bob_key": bob_key, "time_taken": str(time_taken) , "protocol": "E91"}
