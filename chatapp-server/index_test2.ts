@@ -33,9 +33,9 @@ async function generateKey(): Promise<string> {
         ct++;
         console.log(ct);
         const urls = [
-          `http://192.168.1.10:8000/bs_key/${keySize}`,
-          `http://192.168.1.10:8000/bb84_key/${keySize}`,
-          `http://192.168.1.10:8000/e91_key/${keySize}`
+          `http://192.168.1.10:8000/bs_key/${keySize}`
+          // `http://192.168.1.10:8000/bb84_key/${keySize}`,
+          // `http://192.168.1.10:8000/e91_key/${keySize}`
         ];
       
       const randomUrl = urls[Math.floor(Math.random() * urls.length)];
@@ -183,6 +183,6 @@ wss.on('connection', (ws: WebSocket) => {
   });
 });
 
-server.listen(3000, () => {
+server.listen(3000, '0.0.0.0',() => {
   console.log('Server started on port 3000');
 });

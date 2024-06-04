@@ -2,6 +2,7 @@ import { serialize } from 'cookie';
 import { redirect } from '@sveltejs/kit';
 
 const defaultCookieOpts = {
+    secure: false,
     httpOnly: false,
     maxAge: 3600 * 1000 * 24 * 365,
     path: '/'
