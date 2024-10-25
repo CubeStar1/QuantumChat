@@ -2,6 +2,12 @@
 
 Quantum Chat is a secure messaging system that uses Quantum Key Distribution (QKD) for cryptographic key generation and RSA for key exchange. It comprises a NodeJS server, a Svelte client, and a QKD Python server for quantum key generation.
 
+![Quantum Chat UI](https://github.com/CubeStar1/QuantumChat/blob/main/static/chatapp-frontend.png)
+![Quantum Chat Architecture](https://github.com/CubeStar1/QuantumChat/blob/main/static/quantum-chat-architecture.jpg)
+[Report](https://github.com/CubeStar1/QuantumChat/blob/main/static/report/QKD_EL_Phase_3.pdf)
+
+
+
 ## Key Features
 
 - Server-side component in TypeScript with WebSocket communication
