@@ -37,7 +37,7 @@
   }
  
   .dark {
-    --background: 0 0% 9%;
+    --background: 0 0% 0%;
     --foreground: 210 40% 98%;
  
     --muted: 217.2 32.6% 17.5%;
@@ -107,6 +107,14 @@ body {
 }
   
 .overflow-scroll {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.overflow-x-hidden {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.overflow-y-scroll {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }

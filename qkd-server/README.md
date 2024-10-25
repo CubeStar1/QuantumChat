@@ -1,44 +1,75 @@
-# Quantum Key Distribution Simulator
+# Quantum Key Distribution (QKD) Server
 
-This project demonstrates the concept of Quantum Key Distribution using Qiskit and Streamlit. The Streamlit app allows users to generate Bell states, entangled Bell states, and a final circuit. It also provides an endpoint to generate a shared key using quantum computations.
+## Overview
 
+This server hosts multiple APIs that demonstrate the concept of Quantum Key Distribution (QKD) using entangled Bell states. QKD is a secure communication method that leverages quantum mechanics to establish a shared secret key between two parties, ensuring secure data transmission.
 
+## APIs
 
-## About Quantum Key Distribution using Entangled Bell States
+The server includes the following APIs:
 
-- Quantum Key Distribution (QKD) is a method of secure communication that uses quantum mechanics to secure a communication channel. One of the most well-known QKD protocols is the BB84 protocol, which uses qubits to generate a shared secret key between two parties.
-- This project demonstrates the concept of QKD using entangled Bell states. Bell states are a set of four maximally entangled quantum states that form the basis for many quantum communication protocols.
-- In this method, two parties, commonly referred to as Alice and Bob, generate a shared secret key that can be used for encrypting and decrypting messages. The security of the key is guaranteed by the laws of quantum mechanics, specifically the principle of quantum entanglement and the no-cloning theorem.
-- In the context of this project, the entangled Bell states are used to generate a shared key between Alice and Bob. The `generate_key.py` script defines a FastAPI application with a single `GET endpoint /key/{desired_key_length}`. This endpoint generates a shared key of a specified length using quantum computations. The generated key is then used in another chat application to generate symmetric keys for encryption.
-
-## File Descriptions
-
-- `app.py`: This is the main Python script where the Streamlit app is defined. It contains several pages such as "Bell States", "Entangled Bell States", "Final Circuit", and "Generate Shared Key". Each page is a function that defines the layout and functionality of that page.
-
-- `app_functions.py`: This file contains the functions `quantum_compute` and `generate_code` used in the `app.py` and `generate_key.py` scripts.
-
-- `generate_key.py`: This script defines a FastAPI application with a single GET endpoint `/key/{desired_key_length}`. The endpoint generates a shared key of a specified length using quantum computations. This endpoint is used in another chat application to generate symmetric keys for encryption.
-
-- `requirements.txt`: This file lists the Python packages required for the project. It includes packages like `streamlit`, `qiskit`, `pillow`, `pytest`, and `fastapi`.
+- **QKD API**: Provides endpoints for generating quantum keys.
+- **DICOM API**: Handles medical imaging data.
+- **Chatbot API**: Powers a chatbot application.
 
 
-## Running the Streamlit App
+## Installation
 
-To run the Streamlit app, follow these steps:
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/CubeStar1/QuantumChat.git
+   cd qkd-server
+   ```
 
-1. Ensure you have Python installed on your machine. You can download Python [here](https://www.python.org/downloads/).
+## Starting the APIs
 
-2. Install the required Python packages. In the root directory of the project, run the following command:
+You can start the APIs using the provided `start.py` script or manually via PowerShell.
 
-```bash
-pip install -r requirements.txt
-```
+### Using `start.py`
 
-3. Run the Streamlit app:
+1. **Activate the Virtual Environment:**
+   Ensure your virtual environment is activated:
+   ```bash
+   .\.venv\Scripts\activate
+   ```
 
-```bash
-streamlit run app.py
-```
+2. **Run the Script:**
+   Execute the `start.py` script to generate and run the PowerShell script that starts the APIs:
+   ```bash
+   python start.py
+   ```
 
-4. Open your browser and go to `http://localhost:8501` to view the app.
+### Manually via PowerShell
 
+1. **Activate the Virtual Environment:**
+   ```bash
+   .\.venv\Scripts\activate
+   ```
+
+2. **Start Each API:**
+   - **QKD API**: 
+     ```powershell
+     uvicorn qkd.app:app --host 0.0.0.0 --port 8000
+     ```
+   - **DICOM API**: 
+     ```powershell
+     uvicorn DICOM.app:app --host 0.0.0.0 --port 8001
+     ```
+   - **Chatbot API**: 
+     ```powershell
+     uvicorn chatbot.app:app --host 0.0.0.0 --port 8002
+     ```
+
+## API Endpoints
+
+- **QKD API**: Accessible at `http://localhost:8000`
+- **DICOM API**: Accessible at `http://localhost:8001`
+- **Chatbot API**: Accessible at `http://localhost:8002`
+
+## Notes
+
+- Ensure that the ports are available and not blocked by any firewall settings.
+- The scripts are designed to run on Windows using PowerShell. If you encounter any issues, ensure that your PowerShell execution policy allows running scripts. You can set it temporarily by running:
+  ```powershell
+  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+  ```

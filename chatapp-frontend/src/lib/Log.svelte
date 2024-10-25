@@ -4,6 +4,7 @@
     import { Button } from '$lib/components/ui/button';
     import * as Collapsible from "$lib/components/ui/collapsible";
     import CaretSort from "svelte-radix/CaretSort.svelte";
+    import BackgroundGradient from '$lib/components/ui/BackgroundGradient/BackgroundGradient.svelte';
     export let logTitle;
     export let logElement;
     export let logMessages;

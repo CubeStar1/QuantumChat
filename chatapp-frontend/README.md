@@ -1,38 +1,83 @@
-# create-svelte
+# Quantum Chat Frontend
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+This is the frontend application for Quantum Chat, built with Svelte. It provides a user interface for secure messaging using quantum key distribution.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Real-time chat interface
+- Secure message encryption using AES
+- Integration with Quantum Key Distribution backend
+- Theme switching capability
+- User authentication and conversation management
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Prerequisites
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+- Node.js (version 14 or later recommended)
+- npm (usually comes with Node.js)
 
-## Developing
+## Installation
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+1. Clone the repository if you haven't already:
+   ```bash
+   git clone https://github.com/CubeStar1/QuantumChat.git
+   ```
+
+2. Navigate to the frontend directory:
+   ```bash
+   cd QuantumChat/chatapp-frontend
+   ```
+
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+## Development
+
+To start the development server:
 
 ```bash
 npm run dev
 
-# or start the server and open the app in a new browser tab
+# or to open it in a new browser tab automatically
 npm run dev -- --open
 ```
 
-## Building
+The application will be available at `http://localhost:5173` (or another port if 5173 is in use).
 
-To create a production version of your app:
+## Building for Production
+
+To create a production version of the app:
 
 ```bash
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+You can preview the production build with:
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+```bash
+npm run preview
+```
+
+## Project Structure
+
+- `src/routes/`: Contains the main page components
+- `src/lib/`: Houses reusable components and utility functions
+- `src/lib/components/`: Includes individual UI components like ChatHeader, Sidebar, etc.
+
+## Components
+
+- `+page.svelte`: The main chat interface
+- `DropDown.svelte`: User selection dropdown
+- `ChatHeader.svelte`: Header component for the chat interface
+- `ThemeSwitcher.svelte`: Component for switching between light and dark themes
+- `Sidebar.svelte`: Sidebar component for navigation and user list
+
+## Connecting to Backend
+
+Ensure that the NodeJS backend and QKD server are running before starting the frontend. The WebSocket connection is typically established to `ws://localhost:3000`.
+
+## Notes
+
+- This frontend relies on the Quantum Chat backend for full functionality. Make sure to set up and run the backend servers as described in the main project README.
+- For deploying to production, you may need to adjust the WebSocket connection URL and other environment-specific configurations.

@@ -9,3 +9,5 @@ export interface Message {
 export const messagesStore = writable<Message[]>([]);
 
 export const showLogs = writable(false);
+
+export const selectedProtocol = writable("");
